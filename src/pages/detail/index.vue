@@ -318,10 +318,10 @@ export default {
         this.$http('/projectRichOfTransaction', {params: {project_id: id}}).then(res => {
             this.transactionList = res;
         })
-        // 查询被监控交易  404 (Not Found)
-        // this.$http('/projectMonitoredTransaction', {params: {project_id: id}}).then(res => {
-        //     this.mtransactionList = res;
-        // })
+        // 查询被监控交易  404 (Not Found)    特殊地质交易监测
+        this.$http('/projectMonitoredTransaction', {params: {project_id: id, user_id: 1}}).then(res => {
+            this.mtransactionList = res;
+        })
 
         // 查询钱包地址 持币地址
         this.$http('/projectWallet', {params: {project_id: id, user_id: 1}}).then(res => {
