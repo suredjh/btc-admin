@@ -55,7 +55,7 @@
                 <div class="c-con">
                     <div class="c-list">
                         <div>地址总数</div>
-                        <div class="c-list-num">1223456</div>
+                        <div class="c-list-num">{{projectWalle.volume}}</div>
                     </div>
                     <div class="c-list">
                         <div>24小时新增地址数</div>
@@ -63,7 +63,7 @@
                     </div>
                     <div class="c-list">
                         <div>活跃地址总数</div>
-                        <div class="c-list-num">1223456</div>
+                        <div class="c-list-num">{{projectWalle.activeVolume}}</div>
                     </div>
                     <div class="c-list">
                         <div>24小时新增活跃地址数</div>
@@ -294,7 +294,8 @@ export default {
             telegramActivities: {},
             facebookActivities: {},
             projectTrend: {},
-            projectDistribution: []
+            projectDistribution: [],
+            projectWalle: {}
         }
     },
     created () {
@@ -325,8 +326,8 @@ export default {
 
         // 查询钱包地址 持币地址
         this.$http('/projectWallet', {params: {project_id: id, user_id: 1}}).then(res => {
-            console.log('projectWallet', res)
-            // this.projectWalle = res;
+            console.log('projectWallet', res[0])
+            this.projectWalle = res[0];
         })
 
 
