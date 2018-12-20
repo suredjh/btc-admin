@@ -322,10 +322,18 @@ export default {
         // this.$http('/projectMonitoredTransaction', {params: {project_id: id}}).then(res => {
         //     this.mtransactionList = res;
         // })
+
+        // 查询钱包地址 持币地址
+        this.$http('/projectWallet', {params: {project_id: id, user_id: 1}}).then(res => {
+            console.log('projectWallet', res)
+            // this.projectWalle = res;
+        })
+
+
         // 查询被监控交易地址
-        // this.$http('/projectUserMonitor', {params: {project_id: id}}).then(res => {
-        //     console.log('查询被监控交易地址', res);
-        // })
+        this.$http('/projectUserMonitor', {params: {project_id: id, user_id: 1}}).then(res => {
+            console.log('查询被监控交易地址', res);
+        })
         // 查询项目最新的的Twitter活跃度, 当前只支持查询最新一天（未必是当天）
         this.$http('/projectTwitterActivities', {params: {project_id: id}}).then(res => {
             // console.log('查询项目最新的的Twitter活跃度, 当前只支持查询最新一天（未必是当天）', res);
