@@ -127,8 +127,9 @@ export default {
                 limit: this.pageSize
             }
             this.$http('/projects', { params}).then(res => {
-                this.infoLists = res.map(item => ({...item, categoryName: item.id === '' ? '全部' : this.clists.filter(list => list.id == item.category)[0].name}));
+                this.infoLists = res.map(item => ({...item, categoryName: item.category === '' ? '全部' : this.clists.filter(list => list.id == (item.category+''))[0].name}));
                 // this.total = res.length;
+                // console.log(this.infoLists)
             })
         },
         checkDetailHandle (id) {

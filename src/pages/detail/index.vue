@@ -242,7 +242,7 @@
                     <div class="c-list">
                         Releases: {{githubActivities.releases}}
                     </div>
-                    <div class="c-list">
+                    <div class="c-list c-list-end">
                         最近一次提交代码: {{githubActivities.lastCommitTime}}
                     </div>
                     <div class="c-list">
@@ -357,10 +357,14 @@ export default {
             projectWalle: {}
         }
     },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.reiszeHandle, false);
+    },
     created () {
         let id = this.$route.params.id;
         if (!id) return false;
         this.project_id = id;
+        window.addEventListener('resize', this.reiszeHandle, false)
         // base info
         this.$http(`/project/1`).then(res => {
             this.baseInfo = res;
@@ -421,6 +425,10 @@ export default {
         this.createGithubCommitsChart(this.ctimer);
     },
     methods: {
+        reiszeHandle () {
+            this.myChart2 && this.myChart2.resize();
+            this.myChart && this.myChart.resize();
+        },
         deleteMlist (index) {
             this.$confirm('此操作将永久删除, 是否继续?', '提示', {
                 confirmButtonText: '确定',
@@ -478,7 +486,7 @@ export default {
                     legend: {
                         orient: 'vertical',
                         // x: 'right',
-                        right: 100,
+                        right: 40,
                         data: data.map(item => item.name)
                     },
                     series: [
@@ -751,6 +759,9 @@ html, body {
 }
 .c-con5 .c-list {
     width: 20%;
+}
+.c-con5 .c-list-end {
+    width: 40%;
 }
 .c-list-flex {
     flex: 1;
