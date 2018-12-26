@@ -18,7 +18,7 @@
         <div class="tlist" v-for="item in infoLists" :key="item.id" @click="checkDetailHandle(item.id)">
             <div class="tinfo">
                 <div class="img"><img :src="item.icon" /></div>
-                <div class="info">{{item.name}}</div>
+                <div class="info">{{item.symbol}}</div>
             </div>
             <div>{{item.categoryName}}</div>
             <div>{{item.marketValue}}</div>
@@ -43,8 +43,8 @@ export default {
         return {
             infoLists: [],
             page: 1,
-            total: 0,
-            pageSize: 20,
+            total: 1,
+            pageSize: 100,
             ctype: 1,
             activeInfo: '',
             clists: []
@@ -128,7 +128,7 @@ export default {
             }
             this.$http('/projects', { params}).then(res => {
                 this.infoLists = res.map(item => ({...item, categoryName: item.id === '' ? '全部' : this.clists.filter(list => list.id == item.category)[0].name}));
-                this.total = res.length;
+                // this.total = res.length;
             })
         },
         checkDetailHandle (id) {
@@ -155,7 +155,8 @@ export default {
         flex: 1;
     }
     .title-first {
-        min-width:  400px;
+        // min-width:  400px;
+        width: 30%;
         padding-left: 20px;
         text-align: left;
     }
@@ -175,7 +176,7 @@ export default {
         flex: 1;
         &:first-child {
             text-align: left;
-            min-width: 400px;
+            width: 30%;
             padding-left: 20px;
         }
     }

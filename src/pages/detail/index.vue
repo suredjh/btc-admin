@@ -32,18 +32,18 @@
                     <div class="c-list-usr">
                         <div>姓名</div>
                         <div>日本聪</div>
-                        <div>N/A</div>
+                        <!-- <div>N/A</div> -->
                     </div>
                     <div class="c-list-usr">
                         <div>职位</div>
                         <div>创始人</div>
-                        <div>N/A</div>
+                        <!-- <div>N/A</div> -->
                     </div>
-                    <div class="c-list-usr">
+                    <!-- <div class="c-list-usr">
                         <div>介绍</div>
                         <div>{{baseInfo.about}}</div>
                         <div>N/A</div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div> 
@@ -59,7 +59,7 @@
                     </div>
                     <div class="c-list">
                         <div>24小时新增地址数</div>
-                        <div class="c-list-pre down">8.098 <img src="../../assets/images/down.png" alt=""><span>-3.74%</span></div>
+                        <div class="c-list-pre down">{{projectWalle.volumeIn24}} <img src="../../assets/images/down.png" alt=""> <span>-2.35%</span></div>
                     </div>
                     <div class="c-list">
                         <div>活跃地址总数</div>
@@ -67,7 +67,7 @@
                     </div>
                     <div class="c-list">
                         <div>24小时新增活跃地址数</div>
-                        <div class="c-list-pre up">8.098<img src="../../assets/images/up.png" alt=""><span>+3.74%</span></div>
+                        <div class="c-list-pre up">{{projectWalle.activeVolumeIn24}} <img src="../../assets/images/up.png" alt=""><span>+3.17%</span></div>
                     </div>
                 </div>
                 <!-- list && map -->
@@ -134,7 +134,7 @@
                     <div class="lists" style="padding-left: 100px;">
                         <div class="ls-top">
                             <span>特殊地质交易监测</span>
-                            <span>点击设置</span>
+                            <span @click="dialogFormVisible = true">点击设置</span>
                         </div>
                         <div class="ls-title">
                             <div>输出账户</div>
@@ -224,8 +224,8 @@
         <div class="item-list" id="activity">
             <div class="item-list-title"><img src="../../assets/images/title.jpg" alt="">开发活跃度</div>
             <div class="content">
-                <div class="c-title">社交平台</div>
-                <div class="c-ind-title">Twitter</div>
+                <div class="c-title">Github基本信息</div>
+                <!-- <div class="c-ind-title">Twitter</div> -->
                 <div class="c-con c-con5">
                     <div class="c-list">
                         Contributors: {{githubActivities.contributors}}
@@ -272,6 +272,58 @@
                 
             </div>
         </div>
+        <el-dialog title="设置" :visible.sync="dialogFormVisible">
+            <el-dialog
+            width="30%"
+            title="编辑"
+            :visible.sync="innerVisible"
+            append-to-body>
+            <el-form :model="form">
+                <el-form-item label="输出账户" >
+                    <el-input v-model="form.from"></el-input>
+                </el-form-item>
+                <el-form-item label="输入账户">
+                    <el-input v-model="form.to"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="innerVisible = false">取消</el-button>
+                <el-button type="primary" @click="ensureChangeForm">确定</el-button>
+            </div>
+            </el-dialog>
+            <el-table
+                :data="mtransactionList"
+                height="250"
+                border
+                style="width: 100%">
+                <el-table-column
+                prop="from"
+                label="输出账户"
+                width="180">
+                </el-table-column>
+                <el-table-column
+                prop="to"
+                label="输出账户"
+                width="180">
+                </el-table-column>
+                <el-table-column
+                prop="volume"
+                label="额度">
+                </el-table-column>
+                <el-table-column
+                label="操作">
+                    <template slot-scope="{$index}">
+                        <div>
+                            <el-button size="mini" @click="showSetModal($index)">编辑</el-button>
+                            <el-button size="mini" type="danger" @click="deleteMlist($index)">删除</el-button>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="dialogFormVisible = false">完 成</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -281,6 +333,13 @@ export default {
     name: 'detail',
     data () {
         return {
+            dialogFormVisible: false,
+            innerVisible: false,
+            form: {
+                from: '',
+                to: '',
+                index: 0
+            },
             ctimer: '90',
             baseInfo: {},
             richList: [],
@@ -362,6 +421,35 @@ export default {
         this.createGithubCommitsChart(this.ctimer);
     },
     methods: {
+        deleteMlist (index) {
+            this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.mtransactionList.splice(index, 1)
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
+        },
+        ensureChangeForm () {
+            let { from, to, index} = this.form, cdata = this.mtransactionList[index];
+            cdata.from = from
+            cdata.to = to
+            this.innerVisible = false
+        },
+        showSetModal (index) {
+            let cdata = this.mtransactionList[index], { from, to} = cdata;
+            this.form = Object.assign({}, {...this.form}, { from, to, index})
+            this.innerVisible = true
+        },
         switchTimer (timer) {
             if (this.ctimer == timer) return false;
             this.ctimer = timer;
@@ -733,6 +821,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 }
 .ls-title {
     background: #f0f0f0;
