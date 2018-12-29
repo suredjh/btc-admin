@@ -4,7 +4,7 @@
         <div class="classify">
             <div class="title">分类</div>
             <ul class="lists">
-                <li v-for="item in clists" :key="item.name" @click="changeClassify(item.id)" :class="['list', {'active': item.id === activeInfo}]">{{item.name}}</li>
+                <li v-for="item in clists" :key="item.title" @click="changeClassify(item.id)" :class="['list', {'active': item.id === activeInfo}]">{{item.title}}</li>
             </ul>
         </div>
         <!-- 列表 -->
@@ -44,80 +44,17 @@ export default {
             infoLists: [],
             page: 1,
             total: 1,
-            pageSize: 100,
+            pageSize: 10,
             ctype: 1,
             activeInfo: '',
-            clists: []
+            clists: [{id: '', title: '全部'}]
         }
     },
     created() {
-        this.getDataListHandle(this.page);
-        this.clists = [
-            {
-                id: '',
-                name: '全部'
-            },
-            {
-                id: '0',
-                name: '基础链'
-            },
-            {
-                id: '1',
-                name: '金融服务'
-            },
-            {
-                id: '2',
-                name: '预测/博彩'
-            },
-            {
-                id: '3',
-                name: '数据存储'
-            },
-            {
-                id: '4',
-                name: '匿名币'
-            },
-            {
-                id: '5',
-                name: '交易平台'
-            },
-            {
-                id: '6',
-                name: '物联网'
-            },
-            {
-                id: '7',
-                name: '生物/医疗'
-            },
-            {
-                id: '8',
-                name: '内容版权'
-            },
-            {
-                id: '9',
-                name: '网络安全'
-            },
-            {
-                id: '10',
-                name: '社交通讯'
-            },
-            {
-                id: '11',
-                name: '体育娱乐'
-            },
-            {
-                id: '12',
-                name: '广告传媒'
-            },
-            {
-                id: '13',
-                name: 'AR/VR'
-            },
-            {
-                id: '14',
-                name: '其他'
-            }
-        ]
+        this.$http('/category').then(res => {
+            this.clists = this.clists.concat(res);
+            return this.getDataListHandle(this.page);
+        })
     },
     methods: {
         getDataListHandle (page = 1) {
@@ -127,8 +64,9 @@ export default {
                 limit: this.pageSize
             }
             this.$http('/projects', { params}).then(res => {
-                this.infoLists = res.map(item => ({...item, categoryName: item.category === '' ? '全部' : this.clists.filter(list => list.id == (item.category+''))[0].name}));
-                // this.total = res.length;
+                let {allcount, data} = res;
+                this.infoLists = data.map(item => ({...item, categoryName: item.category === '' ? '全部' : this.clists.filter(list => list.id == (item.category+''))[0].title}));
+                this.total = allcount;
                 // console.log(this.infoLists)
             })
         },
