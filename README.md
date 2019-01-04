@@ -18,4 +18,8 @@ npm run build
 npm run build --report
 ```
 
+# build for production
+npm run build  --->  把dist文件夹的东西 放在  服务器上面 就可以了 
+
+
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
